@@ -1,0 +1,7 @@
+*.exe
+*.exe~
+*.env
+
+# arquivos de teste
+*.test
+
