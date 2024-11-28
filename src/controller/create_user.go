@@ -6,14 +6,25 @@ import (
 	"github.com/Gileno29/golang-jwt-crud/src/configuration/logger"
 	"github.com/Gileno29/golang-jwt-crud/src/configuration/validation"
 	"github.com/Gileno29/golang-jwt-crud/src/controller/model/request"
-	"github.com/Gileno29/golang-jwt-crud/src/controller/model/response"
+	"github.com/Gileno29/golang-jwt-crud/src/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
+var (
+	UserDomainInterface model.UserDomainInterface
+)
+
 func CreateUser(c *gin.Context) {
-	logger.Info("Init CreateUser controller", zap.String("journey", "CreateUser"))
 	var userRequest request.UserRequest
+	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
+
+	if err := domain.CreateUser(); err != nil {
+		c.JSON(err.Code, err)
+		return
+	}
+	logger.Info("Init CreateUser controller", zap.String("journey", "CreateUser"))
+
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		logger.Error("Error trying to validate user info", err)
 		errRest := validation.ValidateUserError(err)
@@ -22,14 +33,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	response := response.UserResponse{
-		ID:    "test",
-		Email: userRequest.Email,
-		Name:  userRequest.Name,
-		Age:   userRequest.Age,
-	}
-
 	logger.Info("User create seccessfully", zap.String("journey", "CreateUser"))
 
-	c.JSON(http.StatusOK, response)
+	c.String(http.StatusOK, "")
 }
