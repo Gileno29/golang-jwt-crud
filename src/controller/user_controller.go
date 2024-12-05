@@ -6,7 +6,9 @@ import (
 )
 
 func NewUserControllerInterface(serviceInterface service.UserDomainService) UserControllerInterface {
-	return &userControllerInterface{}
+	return &userControllerInterface{
+		service: serviceInterface,
+	}
 }
 
 type UserControllerInterface interface {
