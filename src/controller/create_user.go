@@ -7,6 +7,7 @@ import (
 	"github.com/Gileno29/golang-jwt-crud/src/configuration/validation"
 	"github.com/Gileno29/golang-jwt-crud/src/controller/model/request"
 	"github.com/Gileno29/golang-jwt-crud/src/model"
+	"github.com/Gileno29/golang-jwt-crud/src/view"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -35,5 +36,5 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 
 	logger.Info("User create seccessfully", zap.String("journey", "CreateUser"))
 
-	c.String(http.StatusOK, "")
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 }
