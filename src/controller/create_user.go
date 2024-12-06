@@ -34,7 +34,7 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 		return
 	}
 
-	logger.Info("User create seccessfully", zap.String("journey", "CreateUser"))
+	logger.Info("User create seccessfully ", zap.Any("Usuario:", domain.GetName()), zap.String("journey", "CreateUser"))
 
 	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 }
