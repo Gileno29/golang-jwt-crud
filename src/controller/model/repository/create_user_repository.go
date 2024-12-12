@@ -6,7 +6,9 @@ import (
 
 	"github.com/Gileno29/golang-jwt-crud/src/configuration/logger"
 	"github.com/Gileno29/golang-jwt-crud/src/configuration/rest_err"
+	"github.com/Gileno29/golang-jwt-crud/src/controller/model/repository/entity/converter"
 	"github.com/Gileno29/golang-jwt-crud/src/model"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -19,17 +21,15 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 	collection_name := os.Getenv(MONGO_USER_DB)
 
 	collection := ur.databaseConection.Collection(collection_name)
-	value, err := userDomain.GetJSONValue()
-	if err != nil {
-		return nil, rest_err.NewForbiddenError(err.Error())
-	}
+	value := converter.ConvertDomainToEntity(userDomain)
+
 	result, err := collection.InsertOne(context.Background(), value)
 
 	if err != nil {
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
-	userDomain.SetID(result.InsetedID.(string))
+	value.ID = result.InsertedID.(primitive.ObjectID)
 
-	return userDomain, nil
+	return converter.ConvertEntityToDomain(*value), nil
 
 }

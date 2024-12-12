@@ -20,10 +20,13 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	var userRequest request.UserRequest
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
 
-	if err := uc.service.CreateUser(domain); err != nil {
+	domainResult, err := uc.service.CreateUser(domain)
+
+	if err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
+
 	logger.Info("Init CreateUser controller", zap.String("journey", "CreateUser"))
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -36,5 +39,5 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 
 	logger.Info("User create seccessfully ", zap.Any("Usuario:", domain.GetName()), zap.String("journey", "CreateUser"))
 
-	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
 }
