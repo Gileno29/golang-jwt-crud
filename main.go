@@ -28,9 +28,7 @@ func main() {
 		log.Fatalf("Erro tryng to conect to database, erro=%s", err.Error())
 		return
 	}
-	repo := repository.NewUserRepository(database)
-	service := service.NewUserDomainService(repo)
-	userController := controller.NewUserControllerInterface(service)
+	
 
 	router := gin.Default()
 
